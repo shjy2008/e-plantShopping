@@ -1,9 +1,12 @@
 import React, { useState,useEffect } from 'react';
 import './ProductList.css'
 import CartItem from './CartItem';
+import { useDispatch } from 'react-redux';
 function ProductList() {
     const [showCart, setShowCart] = useState(false); 
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
+    const [addedToCart, setAddedToCart] = useState({}); // Manage which products are added to cart
+    const dispatch = useDispatch();
 
     const plantsArray = [
         {
@@ -212,40 +215,46 @@ function ProductList() {
             ]
         }
     ];
-   const styleObj={
-    backgroundColor: '#4CAF50',
-    color: '#fff!important',
-    padding: '15px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignIems: 'center',
-    fontSize: '20px',
-   }
-   const styleObjUl={
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '1100px',
-   }
-   const styleA={
-    color: 'white',
-    fontSize: '30px',
-    textDecoration: 'none',
-   }
-   const handleCartClick = (e) => {
-    e.preventDefault();
-    setShowCart(true); // Set showCart to true when cart icon is clicked
-};
-const handlePlantsClick = (e) => {
-    e.preventDefault();
-    setShowPlants(true); // Set showAboutUs to true when "About Us" link is clicked
-    setShowCart(false); // Hide the cart when navigating to About Us
-};
+    const styleObj={
+        backgroundColor: '#4CAF50',
+        color: '#fff!important',
+        padding: '15px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignIems: 'center',
+        fontSize: '20px',
+    }
+    const styleObjUl={
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '1100px',
+    }
+    const styleA={
+        color: 'white',
+        fontSize: '30px',
+        textDecoration: 'none',
+    }
+    const handleCartClick = (e) => {
+        e.preventDefault();
+        setShowCart(true); // Set showCart to true when cart icon is clicked
+    };
+    const handlePlantsClick = (e) => {
+        e.preventDefault();
+        setShowPlants(true); // Set showAboutUs to true when "About Us" link is clicked
+        setShowCart(false); // Hide the cart when navigating to About Us
+    };
 
-   const handleContinueShopping = (e) => {
-    e.preventDefault();
-    setShowCart(false);
-  };
+    const handleContinueShopping = (e) => {
+        e.preventDefault();
+        setShowCart(false);
+    };
+
+    const handleAddToCart = (index, plantIndex) => {
+
+    };
+
+  
     return (
         <div>
             <div className="navbar" style={styleObj}>
@@ -270,7 +279,9 @@ const handlePlantsClick = (e) => {
                 <div className="product-grid">
                     {plantsArray.map((categoryItem, index) => (
                         <div key={index}>
-                            <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100px"}}><h1>{categoryItem.category}</h1></div>
+                            <div style={{display: "flex", justifyContent/*horizontal*/: "center", alignItems/*vertical*/: "center", height: "100px"}}>
+                                <h1 style={{borderTop:"1px solid black", borderBottom:"1px solid black", padding:"0 50px"}}>{categoryItem.category}</h1>
+                            </div>
                             <div className="product-list">
                                 {categoryItem.plants.map((plantItem, plantIndex) => (
                                     <div key={plantIndex} className="product-card">
@@ -278,7 +289,7 @@ const handlePlantsClick = (e) => {
                                         <img className="product-image" src={plantItem.image} alt={plantItem.name} />
                                         <p>{plantItem.description}</p>
                                         <p className="product-price">{plantItem.cost}</p>
-                                        <button className="product-button" onClick={() => {}}>Add to Cart</button>
+                                        <button className="product-button" onClick={() => {handleAddToCart(index, plantIndex)}}>Add to Cart</button>
                                     </div>
                                 ))}
                             </div>
