@@ -6,7 +6,6 @@ import { addItem } from './CartSlice';
 function ProductList() {
     const [showCart, setShowCart] = useState(false); 
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
-    const [addedToCart, setAddedToCart] = useState({}); // Manage which products are added to cart
     const dispatch = useDispatch();
     const cartState = useSelector((state) => state.cart);
 
@@ -253,11 +252,10 @@ function ProductList() {
     };
 
     const handleAddToCart = (plantItem) => {
-        dispatch(addItem(plantItem));
-        // Better than setAddedToCart({...addedToCart, [plantItem.name]: true}) because it can handle multiple calls at the same time
-        setAddedToCart((prevState) => ({
-            ...prevState, [plantItem.name]: true,
-        }));
+        const existingItem = cartState.items.find((i) => i.item.name === plantItem.name);
+        if (!existingItem) {
+            dispatch(addItem(plantItem));
+        }
     };
 
     const getTotalShoppingItems = () => {
@@ -268,6 +266,14 @@ function ProductList() {
         return count;
     };
 
+    const isItemAddedToCart = (plantItem) => {
+        if (cartState.items.find((i) => i.item.name === plantItem.name)){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
   
     return (
         <div>
@@ -326,7 +332,8 @@ function ProductList() {
                                         <img className="product-image" src={plantItem.image} alt={plantItem.name} />
                                         <p>{plantItem.description}</p>
                                         <p className="product-price">{plantItem.cost}</p>
-                                        <button className="product-button" onClick={() => {handleAddToCart(plantItem)}}>Add to Cart</button>
+                                        <button className={`product-button ${isItemAddedToCart(plantItem) ? "added-to-cart" : ""}`}
+                                            onClick={() => {handleAddToCart(plantItem)}}>Add to Cart</button>
                                     </div>
                                 ))}
                             </div>
